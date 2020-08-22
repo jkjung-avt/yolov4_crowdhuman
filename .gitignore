@@ -1,0 +1,5 @@
+__pycache__
+*.pyc
+
+data/*.zip
+data/*.odgt
