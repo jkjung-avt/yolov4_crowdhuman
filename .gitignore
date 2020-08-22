@@ -3,3 +3,5 @@ __pycache__
 
 data/*.zip
 data/*.odgt
+data/Images/
+data/images_test/
