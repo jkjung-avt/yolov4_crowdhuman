@@ -36,6 +36,12 @@ for f in CrowdHuman_train01.zip CrowdHuman_train02.zip CrowdHuman_train03.zip Cr
   unzip ${f}
 done
 
+echo "** Create symbolic links of image files"
+mkdir -p ../crowdhuman
+for jpg in Images/*.jpg; do
+  ln -sf $(readlink -f ${jpg}) ../crowdhuman
+done
+
 popd > /dev/null
 
 echo "** Done."
