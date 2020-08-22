@@ -1,7 +1,5 @@
 __pycache__
 *.pyc
 
-data/*.zip
-data/*.odgt
-data/Images/
-data/images_test/
+data/raw/
+data/crowdhuman/
