@@ -60,6 +60,10 @@ Note that I use python3 exclusively in this tutorial (python2 might not work).
 
    The "gen_txts.py" script would output all necessary ".txt" files in the "data/crowdhuman/" subdirectory.  At this point, you have all custom files needed to train a YOLOv4 CrowdHuman detector.  (I have also created "verify_txts.py" script in order to verify the generated txt files.)
 
+   In this tutorial, I'm training the YOLOv4 model to detect 2 classes of object: "head" (0) and "person" (1), where the "person" class corresponds to "full body" in the original CrowdHuman annotations.  Take a look at [data/crowdhuman.data](data/crowdhuman.data), [data/crowdhuman.names](data/crowdhuman.names), and [data/crowdhuman/](data/crowdhuman) to gain a better understanding of the data files we have prepared for the training.
+
+   ![A sample jpg from the CrowdHuman dataset](doc/crowdhuman_sample.jpg)
+
 <a name="training-locally"></a>
 Training on a local PC
 ----------------------
