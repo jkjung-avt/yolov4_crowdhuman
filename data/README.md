@@ -1,6 +1,6 @@
 # CrowdHuman Dataset by MEGVII
 
-* Official web site: [https://www.crowdhuman.org/](://www.crowdhuman.org/)
+* Official web site: [https://www.crowdhuman.org/](https://www.crowdhuman.org/)
 
 * Reference:
    - [CrowdHuman: A Benchmark for Detecting Human in a Crowd](https://arxiv.org/abs/1805.00123)
