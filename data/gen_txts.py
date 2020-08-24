@@ -6,7 +6,7 @@ Please also refer to README.md in this directory.
 Inputs:
     * raw/annotation_train.odgt
     * raw/annotation_val.odgt
-    * raw/Images/[IDs].jpg
+    * crowdhuman/[IDs].jpg
 
 Outputs:
     * crowdhuman/train.txt
@@ -22,12 +22,12 @@ import numpy as np
 import cv2
 
 
-IMAGES_DIR = 'raw/Images'
+IMAGES_DIR = 'crowdhuman'
 OUTPUT_DIR = 'crowdhuman'
 
 # These are the expected input image width/height of the yolov4 model
-INPUT_WIDTH  = 608
-INPUT_HEIGHT = 608
+INPUT_WIDTH  = 416
+INPUT_HEIGHT = 416
 
 # Minimum width/height of objects for detection (don't learn from
 # objects smaller than these
@@ -122,8 +122,8 @@ def rm_txts(path_name):
     """Remove txt files in path."""
     pth = Path(path_name)
     for txt in pth.glob('*.txt'):
-        if child.is_file():
-            child.unlink()
+        if txt.is_file():
+            txt.unlink()
 
 
 def main():
@@ -136,14 +136,20 @@ def main():
     process('train', 'raw/annotation_train.odgt')
 
     if DO_KMEANS:
-        from sklearn.cluster import KMeans
-        X = np.array(BBOX_WHS)
-        kmeans = KMeans(n_clusters=KMEANS_CLUSTERS, random_state=0).fit(X)
-        print('\n** bbox width/height clusters:')
-        centers = kmeans.cluster_centers_
-        centers = centers[centers[:, 0].argsort()]  # sort by bbox w
-        for center in centers:
-            print('%6.2f, %6.2f' % (center[0], center[1]))
+        try:
+            from sklearn.cluster import KMeans
+        except ModuleNotFoundError:
+            print('WARNING: no sklearn, skipping anchor clustering...')
+        else:
+            X = np.array(BBOX_WHS)
+            kmeans = KMeans(n_clusters=KMEANS_CLUSTERS, random_state=0).fit(X)
+            centers = kmeans.cluster_centers_
+            centers = centers[centers[:, 0].argsort()]  # sort by bbox w
+            print('\n** for yolov4-%dx%d, ' % (INPUT_WIDTH, INPUT_HEIGHT), end='')
+            print('resized bbox width/height clusters are: ', end='')
+            print(' '.join(['(%.2f, %.2f)' % (c[0], c[1]) for c in centers]))
+            print('\nanchors = ', end='')
+            print(' '.join(['(%d,%d)' % (int(c[0]), int(c[1])) for c in centers]))
 
 
 if __name__ == '__main__':
