@@ -149,7 +149,7 @@ def main():
             print('resized bbox width/height clusters are: ', end='')
             print(' '.join(['(%.2f, %.2f)' % (c[0], c[1]) for c in centers]))
             print('\nanchors = ', end='')
-            print('  '.join(['%d,%d,' % (int(c[0]), int(c[1])) for c in centers]))
+            print(',  '.join(['%d,%d' % (int(c[0]), int(c[1])) for c in centers]))
 
 
 if __name__ == '__main__':
