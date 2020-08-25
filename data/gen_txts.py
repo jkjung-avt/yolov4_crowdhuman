@@ -6,12 +6,12 @@ Please also refer to README.md in this directory.
 Inputs:
     * raw/annotation_train.odgt
     * raw/annotation_val.odgt
-    * crowdhuman/[IDs].jpg
+    * crowdhuman-512x512/[IDs].jpg
 
 Outputs:
-    * crowdhuman/train.txt
-    * crowdhuman/test.txt
-    * crowdhuman/[IDs].txt (one annotation for each image in train or test)
+    * crowdhuman-512x512/train.txt
+    * crowdhuman-512x512/test.txt
+    * crowdhuman-512x512/[IDs].txt (one annotation for each image in train or test)
 """
 
 
@@ -22,12 +22,13 @@ import numpy as np
 import cv2
 
 
-IMAGES_DIR = 'crowdhuman'
-OUTPUT_DIR = 'crowdhuman'
-
 # These are the expected input image width/height of the yolov4 model
-INPUT_WIDTH  = 416
-INPUT_HEIGHT = 416
+INPUT_WIDTH  = 512
+INPUT_HEIGHT = 512
+
+# Input/output directories
+IMAGES_DIR = 'crowdhuman-%dx%d' % (INPUT_WIDTH, INPUT_HEIGHT)
+OUTPUT_DIR = 'crowdhuman-%dx%d' % (INPUT_WIDTH, INPUT_HEIGHT)
 
 # Minimum width/height of objects for detection (don't learn from
 # objects smaller than these
@@ -99,7 +100,7 @@ def process(set_='test', annotation_filename='raw/annotation_val.odgt'):
                         line = txt_line(1, obj['fbox'], img_w, img_h)
                         if line:
                             ftxt.write(line)
-            jpgs.append('data/crowdhuman/%s.jpg' % ID)
+            jpgs.append('data/%s/%s.jpg' % (output_dir, ID))
     # write the 'data/crowdhuman/train.txt' or 'data/crowdhuman/test.txt'
     set_path = output_dir / ('%s.txt' % set_)
     with open(set_path.as_posix(), 'w') as fset:

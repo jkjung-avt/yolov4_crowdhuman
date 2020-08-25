@@ -2,4 +2,4 @@ __pycache__
 *.pyc
 
 data/raw/
-data/crowdhuman/
+data/crowdhuman*/

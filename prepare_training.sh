@@ -2,8 +2,10 @@
 
 set -e
 
-if [[ ! -f data/crowdhuman/train.txt || ! -f data/crowdhuman/test.txt ]]; then
-  echo "ERROR: missing txt file in data/crowdhuman/"
+CROWDHUMAN=crowdhuman-512x512
+
+if [[ ! -f data/${CROWDHUMAN}/train.txt || ! -f data/${CROWDHUMAN}/test.txt ]]; then
+  echo "ERROR: missing txt file in data/${CROWDHUMAN}/"
   exit 1
 fi
 
@@ -12,10 +14,10 @@ echo "** Install requirements"
 pip3 install --user gdown > /dev/null
 
 echo "** Copy files for training"
-ln -sf $(readlink -f data/crowdhuman) darknet/data/
-cp data/crowdhuman.data darknet/data/
+ln -sf $(readlink -f data/${CROWDHUMAN}) darknet/data/
+cp data/${CROWDHUMAN}.data darknet/data/
 cp data/crowdhuman.names darknet/data/
-cp cfg/yolov4-crowdhuman-608.cfg darknet/cfg/
+cp cfg/yolov4-${CROWDHUMAN}.cfg darknet/cfg/
 
 if [[ ! -f darknet/yolov4.conv.137 ]]; then
   pushd darknet > /dev/null

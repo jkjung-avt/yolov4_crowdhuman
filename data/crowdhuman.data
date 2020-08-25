@@ -1,5 +1,0 @@
-classes = 2
-train   = data/crowdhuman/train.txt
-valid   = data/crowdhuman/test.txt
-names   = data/crowdhuman.names
-backup  = backup/

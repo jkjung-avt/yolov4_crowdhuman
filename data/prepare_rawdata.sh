@@ -38,7 +38,7 @@ done
 
 echo "** Create the crowdhuman/ subdirectory"
 rm -rf ../crowdhuman/
-mv Images ../crowdhuman
+mv Images ../crowdhuman-512x512
 
 # the crowdhuman/ subdirectory now contains all train/val jpg images
 
