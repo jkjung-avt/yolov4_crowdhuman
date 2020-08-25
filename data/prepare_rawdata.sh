@@ -5,6 +5,7 @@ set -e
 echo "** Install requirements"
 # "gdown" is for downloading files from GoogleDrive
 pip3 install --user gdown > /dev/null
+export PATH=${HOME}/.local/bin:${PATH}
 
 # make sure to download dataset files to "yolov4_crowdhuman/data/raw/"
 mkdir -p $(dirname $0)/raw
