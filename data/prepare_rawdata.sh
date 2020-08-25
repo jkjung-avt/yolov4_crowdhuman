@@ -37,8 +37,8 @@ for f in CrowdHuman_train01.zip CrowdHuman_train02.zip CrowdHuman_train03.zip Cr
   unzip ${f}
 done
 
-echo "** Create the crowdhuman/ subdirectory"
-rm -rf ../crowdhuman/
+echo "** Create the crowdhuman-512x512/ subdirectory"
+rm -rf ../crowdhuman-512x512/
 mv Images ../crowdhuman-512x512
 
 # the crowdhuman/ subdirectory now contains all train/val jpg images
