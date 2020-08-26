@@ -3,3 +3,4 @@ __pycache__
 
 data/raw/
 data/crowdhuman*/
+data/crowdhuman-*.data

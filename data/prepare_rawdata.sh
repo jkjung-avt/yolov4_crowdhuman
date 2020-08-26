@@ -2,6 +2,13 @@
 
 set -e
 
+# check argument
+if [[ -z $1 || ! $1 =~ [[:digit:]]x[[:digit:]] ]]; then
+  echo "ERROR: This script requires 1 argument, \"input dimension\" of the YOLO model."
+  echo "The input dimension should be {width}x{height} such as 512x512 or 416x256.".
+  exit 1
+fi
+
 echo "** Install requirements"
 # "gdown" is for downloading files from GoogleDrive
 pip3 install --user gdown > /dev/null
@@ -34,12 +41,12 @@ get_file https://drive.google.com/u/0/uc?id=10WIRwu8ju8GRLuCkZ_vT6hnNxs5ptwoL an
 # unzip image files (ignore CrowdHuman_test.zip for now)
 echo "** Unzip dataset files"
 for f in CrowdHuman_train01.zip CrowdHuman_train02.zip CrowdHuman_train03.zip CrowdHuman_val.zip ; do
-  unzip ${f}
+  unzip -n ${f}
 done
 
-echo "** Create the crowdhuman-512x512/ subdirectory"
-rm -rf ../crowdhuman-512x512/
-mv Images ../crowdhuman-512x512
+echo "** Create the crowdhuman-$1/ subdirectory"
+rm -rf ../crowdhuman-$1/
+mv Images ../crowdhuman-$1
 
 # the crowdhuman/ subdirectory now contains all train/val jpg images
 

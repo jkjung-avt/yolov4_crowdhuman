@@ -6,18 +6,23 @@ For verifying correctness of the generated YOLO txt annotations.
 
 import random
 from pathlib import Path
+from argparse import ArgumentParser
 
 import cv2
 
 
 WINDOW_NAME = "verify_txts"
 
+parser = ArgumentParser()
+parser.add_argument('dim', help='input width and height, e.g. 512x512')
+args = parser.parse_args()
+
 if random.random() < 0.5:
     print('Verifying test.txt')
-    jpgs_path = Path('crowdhuman/test.txt')
+    jpgs_path = Path('crowdhuman-%s/test.txt' % args.dim)
 else:
     print('Verifying train.txt')
-    jpgs_path = Path('crowdhuman/train.txt')
+    jpgs_path = Path('crowdhuman-%s/train.txt' % args.dim)
 
 with open(jpgs_path.as_posix(), 'r') as f:
     jpg_names = [l.strip()[5:] for l in f.readlines()]

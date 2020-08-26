@@ -17,23 +17,20 @@ Outputs:
 
 import json
 from pathlib import Path
+from argparse import ArgumentParser
 
 import numpy as np
 import cv2
 
 
-# These are the expected input image width/height of the yolov4 model
-INPUT_WIDTH  = 512
-INPUT_HEIGHT = 512
-
-# Input/output directories
-IMAGES_DIR = 'crowdhuman-%dx%d' % (INPUT_WIDTH, INPUT_HEIGHT)
-OUTPUT_DIR = 'crowdhuman-%dx%d' % (INPUT_WIDTH, INPUT_HEIGHT)
+# input image width/height of the yolov4 model, set by command-line argument
+INPUT_WIDTH  = 0
+INPUT_HEIGHT = 0
 
 # Minimum width/height of objects for detection (don't learn from
 # objects smaller than these
-MIN_W = 6
-MIN_H = 6
+MIN_W = 5
+MIN_H = 5
 
 # Do K-Means clustering in order to determine "anchor" sizes
 DO_KMEANS = True
@@ -41,15 +38,16 @@ KMEANS_CLUSTERS = 9
 BBOX_WHS = []  # keep track of bbox width/height with respect to 608x608
 
 
-def image_shape(ID):
-    images_dir = Path(IMAGES_DIR)
-    jpg_path = images_dir / ('%s.jpg' % ID)
+def image_shape(ID, image_dir):
+    assert image_dir is not None
+    jpg_path = image_dir / ('%s.jpg' % ID)
     img = cv2.imread(jpg_path.as_posix())
     return img.shape
 
 
 def txt_line(cls, bbox, img_w, img_h):
     """Generate 1 line in the txt file."""
+    assert INPUT_WIDTH > 0 and INPUT_HEIGHT > 0
     x, y, w, h = bbox
     x = max(int(x), 0)
     y = max(int(y), 0)
@@ -73,9 +71,10 @@ def txt_line(cls, bbox, img_w, img_h):
         return '%d %.6f %.6f %.6f %.6f\n' % (cls, cx, cy, nw, nh)
 
 
-def process(set_='test', annotation_filename='raw/annotation_val.odgt'):
+def process(set_='test', annotation_filename='raw/annotation_val.odgt',
+            output_dir=None):
     """Process either 'train' or 'test' set."""
-    output_dir = Path(OUTPUT_DIR)
+    assert output_dir is not None
     output_dir.mkdir(exist_ok=True)
     jpgs = []
     with open(annotation_filename, 'r') as fanno:
@@ -83,7 +82,7 @@ def process(set_='test', annotation_filename='raw/annotation_val.odgt'):
             anno = json.loads(raw_anno)
             ID = anno['ID']  # e.g. '273271,c9db000d5146c15'
             print('Processing ID: %s' % ID)
-            img_h, img_w, img_c = image_shape(ID)
+            img_h, img_w, img_c = image_shape(ID, output_dir)
             assert img_c == 3  # should be a BGR image
             txt_path = output_dir / ('%s.txt' % ID)
             # write a txt for each image
@@ -108,33 +107,41 @@ def process(set_='test', annotation_filename='raw/annotation_val.odgt'):
             fset.write('%s\n' % jpg)
 
 
-def rm_tree(path_name):
-    """Remove a path recursively."""
-    pth = Path(path_name)
-    for child in pth.glob('*'):
-        if child.is_file():
-            child.unlink()
-        else:
-            rm_tree(child)
-    pth.rmdir()
-
-
-def rm_txts(path_name):
-    """Remove txt files in path."""
-    pth = Path(path_name)
-    for txt in pth.glob('*.txt'):
+def rm_txts(output_dir):
+    """Remove txt files in output_dir."""
+    for txt in output_dir.glob('*.txt'):
         if txt.is_file():
             txt.unlink()
 
 
 def main():
-    images_dir = Path(IMAGES_DIR)
-    if not images_dir.is_dir():
-        raise SystemExit('ERROR: %s does not exist.' % IMAGES_DIR)
-    rm_txts(OUTPUT_DIR)
+    global INPUT_WIDTH, INPUT_HEIGHT
 
-    process('test', 'raw/annotation_val.odgt')
-    process('train', 'raw/annotation_train.odgt')
+    parser = ArgumentParser()
+    parser.add_argument('dim', help='input width and height, e.g. 512x512')
+    args = parser.parse_args()
+
+    dim_split = args.dim.split('x')
+    if len(dim_split) != 2:
+        raise SystemExit('ERROR: bad spec of input dim (%s)' % args.dim)
+    INPUT_WIDTH, INPUT_HEIGHT = int(dim_split[0]), int(dim_split[1])
+    if INPUT_WIDTH % 32 != 0 or INPUT_HEIGHT % 32 != 0:
+        raise SystemExit('ERROR: bad spec of input dim (%s)' % args.dim)
+
+    output_dir = Path('crowdhuman-%s' % args.dim)
+    if not output_dir.is_dir():
+        raise SystemExit('ERROR: %s does not exist.' % output_dir.as_posix())
+
+    rm_txts(output_dir)
+    process('test', 'raw/annotation_val.odgt', output_dir)
+    process('train', 'raw/annotation_train.odgt', output_dir)
+
+    with open('crowdhuman-%s.data' % args.dim, 'w') as f:
+        f.write("""classes = 2
+train   = data/crowdhuman-%s/train.txt
+valid   = data/crowdhuman-%s/test.txt
+names   = data/crowdhuman.names
+backup  = backup/\n""" % (args.dim, args.dim))
 
     if DO_KMEANS:
         try:
