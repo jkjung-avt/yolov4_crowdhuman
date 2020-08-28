@@ -1,0 +1,5 @@
+classes = 2
+train   = data/crowdhuman-{width}x{height}/train.txt
+valid   = data/crowdhuman-{width}x{height}/test.txt
+names   = data/crowdhuman.names
+backup  = backup/
