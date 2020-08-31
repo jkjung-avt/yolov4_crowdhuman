@@ -6,12 +6,12 @@ Please also refer to README.md in this directory.
 Inputs:
     * raw/annotation_train.odgt
     * raw/annotation_val.odgt
-    * crowdhuman-512x512/[IDs].jpg
+    * crowdhuman-{width}x{height}/[IDs].jpg
 
 Outputs:
-    * crowdhuman-512x512/train.txt
-    * crowdhuman-512x512/test.txt
-    * crowdhuman-512x512/[IDs].txt (one annotation for each image in train or test)
+    * crowdhuman-{width}x{height}train.txt
+    * crowdhuman-{width}x{height}/test.txt
+    * crowdhuman-{width}x{height}/[IDs].txt (one annotation for each image in the training or test set)
 """
 
 
@@ -118,7 +118,7 @@ def main():
     global INPUT_WIDTH, INPUT_HEIGHT
 
     parser = ArgumentParser()
-    parser.add_argument('dim', help='input width and height, e.g. 512x512')
+    parser.add_argument('dim', help='input width and height, e.g. 608x608')
     args = parser.parse_args()
 
     dim_split = args.dim.split('x')

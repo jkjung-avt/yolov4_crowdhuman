@@ -14,7 +14,7 @@ import cv2
 WINDOW_NAME = "verify_txts"
 
 parser = ArgumentParser()
-parser.add_argument('dim', help='input width and height, e.g. 512x512')
+parser.add_argument('dim', help='input width and height, e.g. 608x608')
 args = parser.parse_args()
 
 if random.random() < 0.5:

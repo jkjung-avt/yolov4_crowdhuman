@@ -5,7 +5,7 @@ set -e
 # check argument
 if [[ -z $1 || ! $1 =~ [[:digit:]]x[[:digit:]] ]]; then
   echo "ERROR: This script requires 1 argument, \"input dimension\" of the YOLO model."
-  echo "The input dimension should be {width}x{height} such as 512x512 or 416x256.".
+  echo "The input dimension should be {width}x{height} such as 608x608 or 416x256.".
   exit 1
 fi
 
