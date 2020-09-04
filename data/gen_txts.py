@@ -53,17 +53,14 @@ def txt_line(cls, bbox, img_w, img_h):
     y = max(int(y), 0)
     w = min(int(w), img_w - x)
     h = min(int(h), img_h - y)
-    if w < MIN_W or h < MIN_H:
+    w_rescaled = float(w) * INPUT_WIDTH  / img_w
+    h_rescaled = float(h) * INPUT_HEIGHT / img_h
+    if w_rescaled < MIN_W or h_rescaled < MIN_H:
         return ''
     else:
         if DO_KMEANS:
             global BBOX_WHS
-            BBOX_WHS.append(
-                (
-                    float(w) * INPUT_WIDTH  / img_w,
-                    float(h) * INPUT_HEIGHT / img_h
-                )
-            )
+            BBOX_WHS.append((w_rescaled, h_rescaled))
         cx = (x + w / 2.) / img_w
         cy = (y + h / 2.) / img_h
         nw = float(w) / img_w
