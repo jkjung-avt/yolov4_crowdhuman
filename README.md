@@ -165,7 +165,7 @@ A few words of caution before you begin running the Notebook on Google Colab:
 
 Due to the 7~8 hour limit of runtime mentioned above, you won't be able to train a large yolov4 model in 1 single session.  That's the reason why I chose to do "416x416" model here.
 
-There are 2 ways for you to open the "yolov4_crowdhuman.ipynb" Notebook.  You could either open [yolov4_crowdhuman.ipynb on my Colab account](https://colab.research.google.com/drive/1YM0btXPz_ECJZg1veb_2CBGJmnLJuswP?usp=sharing) and make a copy of your own, or download [yolov4_crowdhuman.ipynb on GitHub](yolov4_crowdhuman.ipynb) and use "File -> Upload notebook" to open it on [your own Colab acount](https://colab.research.google.com/notebooks/intro.ipynb).
+There are 2 ways for you to open the "yolov4_crowdhuman.ipynb" Notebook.  You could either open [yolov4_crowdhuman.ipynb on my Colab account](https://colab.research.google.com/drive/1eoa2_v6wVlcJiDBh3Tb_umhm7a09lpIE?usp=sharing) and make a copy of your own, or download [yolov4_crowdhuman.ipynb on GitHub](yolov4_crowdhuman.ipynb) and use "File -> Upload notebook" to open it on [your own Colab acount](https://colab.research.google.com/notebooks/intro.ipynb).
 
 Next, follow the instructions in the Notebook, i.e. mount your Google Drive (for saving training log and weights) and then run all cells.  You should have a good chance of finishing training the "yolov4-crowdhuman-416x416" model before the Colab session gets automatically disconnected (expired).
 
