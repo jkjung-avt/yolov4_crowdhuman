@@ -43,24 +43,16 @@ For training on a local PC, I use a "608x608" yolov4 model as example.  Note tha
    $ git clone https://github.com/jkjung-avt/yolov4_crowdhuman
    ```
 
-2. Run the "prepare_rawdata.sh" script in the "data/" subdirectory.  It would download CrowdHuman dataset files and unzip all train/val image files.  You could refer to [data/README.md](data/README.md) for more information about the dataset.
+2. Run the "prepare_data.sh" script in the "data/" subdirectory.  It would download CrowdHuman dataset files, unzip all train/val image files, and generate YOLO txt files necessary for training the model.  You could refer to [data/README.md](data/README.md) for more information about the dataset.  You could further refer to [How to train (to detect your custom objects)](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects) for an explanation of YOLO txt files.
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman/data
-   $ ./prepare_rawdata.sh 608x608
+   $ ./prepare_data.sh 608x608
    ```
 
-   This step could take quite a while, depending on your internet speed.  When it's done, all train/val image files would be located in "data/crowdhuman-608x608/" and the original annotation files, "annotation_train.odgt" and "annotation_val.odgt", would be in "data/raw/".
+   This step could take quite a while, depending on your internet speed.  When it is done, all image files and ".txt" files for training would be in the "data/crowdhuman-608x608/" subdirectory.  (If interested, you could do `python3 verify_txts.py 608x608` to verify the generated txt files.)
 
-3. Convert the annotation files to YOLO txt format.  Please refer to [How to train (to detect your custom objects)](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects) for an explanation of YOLO txt files.
-
-   ```shell
-   $ python3 gen_txts.py 608x608
-   ```
-
-   The "gen_txts.py" script would output all necessary ".txt" files in the "data/crowdhuman-608x608/" subdirectory.  At this point, you should have all custom files needed to train the "yolov4-crowdhuman-608x608" model.  (I've also created a "verify_txts.py" script for verifying the generated txt files.)
-
-   In this tutorial, you'd be training the yolov4 model to detect 2 classes of object: "head" (0) and "person" (1), where the "person" class corresponds to "full body" (including occluded body portions) in the original CrowdHuman annotations.  Take a look at "data/crowdhuman-608x608.data", "data/crowdhuman.names", and "data/crowdhuman-608x608/" to gain a better understanding of the data files that have been generated/prepared for the training.
+   This tutorial is for training the yolov4 model to detect 2 classes of object: "head" (0) and "person" (1), where the "person" class corresponds to "full body" (including occluded body portions) in the original CrowdHuman annotations.  Take a look at "data/crowdhuman-608x608.data", "data/crowdhuman.names", and "data/crowdhuman-608x608/" to gain a better understanding of the data files that have been generated/prepared for the training.
 
    ![A sample jpg from the CrowdHuman dataset](doc/crowdhuman_sample.jpg)
 

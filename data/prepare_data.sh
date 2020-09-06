@@ -9,6 +9,12 @@ if [[ -z $1 || ! $1 =~ [[:digit:]]x[[:digit:]] ]]; then
   exit 1
 fi
 
+if which python3 > /dev/null; then
+  PYTHON=python3
+else
+  PYTHON=python
+fi
+
 echo "** Install requirements"
 # "gdown" is for downloading files from GoogleDrive
 pip3 install --user gdown > /dev/null
@@ -50,6 +56,10 @@ mkdir ../crowdhuman-$1/
 ln Images/*.jpg ../crowdhuman-$1/
 
 # the crowdhuman/ subdirectory now contains all train/val jpg images
+
+echo "** Generate yolo txt files"
+cd ..
+${PYTHON} gen_txts.py $1
 
 popd > /dev/null
 
