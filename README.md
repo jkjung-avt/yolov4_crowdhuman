@@ -137,19 +137,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
                               -dont_show -mjpeg_port 8090
    ```
 
-   Training this "yolov4-crowdhuman-608x608" model with my RTX 2080 Ti GPU takes 17~18 hours.  I'm able to get a model with rather higher mAP (mAP@0.5 = 81.11%).
-
-   ```
-    detections_count = 537741, unique_truth_count = 183365
-   class_id = 0, name = head, ap = 81.93%           (TP = 61678, FP = 8887)
-   class_id = 1, name = person, ap = 80.28%         (TP = 69737, FP = 8391)
-
-    for conf_thresh = 0.25, precision = 0.88, recall = 0.72, F1-score = 0.79
-    for conf_thresh = 0.25, TP = 131415, FP = 17278, FN = 51950, average IoU = 71.08 %
-
-    IoU threshold = 50 %, used Area-Under-Curve for each unique Recall
-    mean average precision (mAP@0.50) = 0.811076, or 81.11 %
-   ```
+   As a referemce, training this "yolov4-crowdhuman-608x608" model with my RTX 2080 Ti GPU takes 17~18 hours.
 
    ![My sample loss/mAP chart of the "yolov4-crowdhuman-608x608" model](doc/chart_yolov4-crowdhuman-608x608.png)
 
@@ -168,13 +156,27 @@ After you have trained the "yolov4-crowdhuman-608x608" model locally, it is very
                              -gpu 0
    ```
 
-In addition, you could also verify mAP of the "best" model using "darknet".
+In addition, you could verify mAP of the "best" model using "darknet".
 
    ```
    $ ./darknet detector map data/crowdhuman-608x608.data \
                             cfg/yolov4-crowdhuman-608x608.cfg \
                             backup/yolov4-crowdhuman-608x608_best.weights \
                             -gpu 0
+   ```
+
+For example, I got mAP@0.50 = 0.814523 when I tested my own custom-trained "yolov4-crowdhuman-608x608" model.
+
+   ```
+    detections_count = 614280, unique_truth_count = 183365
+   class_id = 0, name = head, ap = 82.60%           (TP = 65119, FP = 14590)
+   class_id = 1, name = person, ap = 80.30%         (TP = 72055, FP = 11766)
+
+    for conf_thresh = 0.25, precision = 0.84, recall = 0.75, F1-score = 0.79
+    for conf_thresh = 0.25, TP = 137174, FP = 26356, FN = 46191, average IoU = 66.92 %
+
+    IoU threshold = 50 %, used Area-Under-Curve for each unique Recall
+    mean average precision (mAP@0.50) = 0.814523, or 81.45 %
    ```
 
 <a name="training-colab"></a>
