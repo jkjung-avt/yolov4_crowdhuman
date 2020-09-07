@@ -11,15 +11,15 @@ Table of contents
 * [Setup](#setup)
 * [Preparing training data locally](#preparing)
 * [Training on a local PC](#training-locally)
-* [Training on Coogle Colab](#training-colab)
 * [Testing the custom-trained yolov4 model](#testing)
+* [Training on Google Colab](#training-colab)
 * [Deploying onto Jetson Nano](#deploying)
 
 <a name="setup"></a>
 Setup
 -----
 
-If you are going to train the model on [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb), you could skip this Setup section and jump straight to [Training on Coogle Colab](#training-colab).
+If you are going to train the model on [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb), you could skip this Setup section and jump straight to [Training on Google Colab](#training-colab).
 
 Otherwise, to run training locally, you need to have a x86_64 PC with a decent GPU.  Just for reference, I mainly test the code in this repository using a desktop PC with:
 
@@ -71,7 +71,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
    $ vim Makefile  # edit Makefile with a editor of your own preference
    ```
 
-   Modify the first few lines of the "Makefile" as follows.  Please refer to [How to compile on Linux (using make)](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux-using-make) for more information about these settings.  Note that CUDA compute "75" is for RTX 2080 Ti and "61" for GTX 1080.  You might need to modify those based on the kind of GPU you are using.
+   Modify the first few lines of the "Makefile" as follows.  Please refer to [How to compile on Linux (using make)](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux-using-make) for more information about these settings.  Note that, in the example below, CUDA compute "75" is for RTX 2080 Ti and "61" is for GTX 1080.  You might need to modify those based on the kind of GPU you are using.
 
    ```
    GPU=1
@@ -127,7 +127,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
                               yolov4.conv.137 -map -gpu 0
    ```
 
-   You could monitor training progress on the loss/mAP chart (since the `-map` option is used).  Alternatively, if you are training on a remote PC via ssh, add the `-dont_show -mjpeg_port 8090` option so that you could monitor the loss/mAP chart on a web browser (http://{IP address}:8090/).
+   When the model is being trained, you could monitor its progress on the loss/mAP chart (since the `-map` option is used).  Alternatively, if you are training on a remote PC via ssh, add the `-dont_show -mjpeg_port 8090` option so that you could monitor the loss/mAP chart on a web browser (http://{IP address}:8090/).
 
    ```
    ### alternatively, if training on an ssh'ed remote PC
@@ -137,66 +137,86 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
                               -dont_show -mjpeg_port 8090
    ```
 
-   Training this "yolov4-crowdhuman-608x608" model with my RTX 2080 Ti GPU takes 17~18 hours.  I'm able to get a model with rather higher mAP (mAP@0.5 = ~76%).  (TODO:  Add the loss/mAP chart.)
+   Training this "yolov4-crowdhuman-608x608" model with my RTX 2080 Ti GPU takes 17~18 hours.  I'm able to get a model with rather higher mAP (mAP@0.5 = 81.11%).
+
+   ```
+    detections_count = 537741, unique_truth_count = 183365
+   class_id = 0, name = head, ap = 81.93%           (TP = 61678, FP = 8887)
+   class_id = 1, name = person, ap = 80.28%         (TP = 69737, FP = 8391)
+
+    for conf_thresh = 0.25, precision = 0.88, recall = 0.72, F1-score = 0.79
+    for conf_thresh = 0.25, TP = 131415, FP = 17278, FN = 51950, average IoU = 71.08 %
+
+    IoU threshold = 50 %, used Area-Under-Curve for each unique Recall
+    mean average precision (mAP@0.50) = 0.811076, or 81.11 %
+   ```
 
    ![My sample loss/mAP chart of the "yolov4-crowdhuman-608x608" model](doc/chart_yolov4-crowdhuman-608x608.png)
-
-<a name="training-colab"></a>
-Training on Coogle Colab
-------------------------
-
-For training on Google Colab, I use a "416x416" yolov4 model as example.  I have put all data processing and training commands into an IPython Notebook.  So training the "yolov4-crowdhuman-416x416" model on Google Colab is just as simple as: (1) opening the Notebook on Google Colab, (2) mount your Google Drive, (3) run all cells in the Notebook.
-
-A few words of caution before you begin running the Notebook on Google Colab:
-
-* Although GPU runtime is *free of charge* on Google Colab, it is not unlimited nor guaranteed.  Even though "virtual machines that have maximum lifetimes that can be as much as 12 hours" is stated in Colab [FAQ](https://research.google.com/colaboratory/faq.html#resource-limits), I often saw my Colab session got disconnected after 7~8 hours of non-interactive use.
-
-* If you repeatedly connect to GPU instances on Google Colab, you could be temporarily locked out (not able to connect to GPU instances for a couple of days).  So I'd suggest you to connect to a GPU runtime only when needed, and to manually terminate the GPU session when you no longer need it.
-
-* It is strongly advised that you read [Resource Limits](https://research.google.com/colaboratory/faq.html#resource-limits) and use GPU instances on Google Colab wisely.
-
-Due to the 7~8 hour limit of runtime mentioned above, you won't be able to train a large yolov4 model in 1 single session.  That's the reason why I chose to do "416x416" model here.
-
-There are 2 ways for you to open the "yolov4_crowdhuman.ipynb" Notebook.  You could either open [yolov4_crowdhuman.ipynb on my Colab account](https://colab.research.google.com/drive/1eoa2_v6wVlcJiDBh3Tb_umhm7a09lpIE?usp=sharing) and make a copy of your own, or download [yolov4_crowdhuman.ipynb on GitHub](yolov4_crowdhuman.ipynb) and use "File -> Upload notebook" to open it on [your own Colab acount](https://colab.research.google.com/notebooks/intro.ipynb).
-
-Next, follow the instructions in the Notebook, i.e. mount your Google Drive (for saving training log and weights) and then run all cells.  You should have a good chance of finishing training the "yolov4-crowdhuman-416x416" model before the Colab session gets automatically disconnected (expired).
 
 <a name="testing"></a>
 Testing the custom-trained yolov4 model
 ---------------------------------------
 
-If you have trained the "yolov4-crowdhuman-608x608" model locally, it is very easy to test the custom-trained model with "darknet".
+After you have trained the "yolov4-crowdhuman-608x608" model locally, it is very easy to test the custom-trained model with "darknet".
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman/darknet
-   $ ./darknet detector test data/crowdhuma-608x608.data \
+   $ ./darknet detector test data/crowdhuman-608x608.data \
                              cfg/yolov4-crowdhuman-608x608.cfg \
                              backup/yolov4-crowdhuman-608x608_best.weights \
                              data/crowdhuman-608x608/273275,4e9d1000623d182f.jpg \
                              -gpu 0
    ```
 
-Otherwise, for the "yolov4-crowdhuman-416x416" model trained on Google Colab, you'll need to:
+In addition, you could also verify mAP of the "best" model using "darknet".
 
-* build "darknet" locally,
-* generate the 2 files "data/crowdhuma-416x416.data" (modify from [crowdhuman-template.data](https://github.com/jkjung-avt/yolov4_crowdhuman/blob/master/data/crowdhuman-template.data)) and "cfg/yolov4-crowdhuman-416x416.cfg" (copy from [yolov4-crowdhuman-416x416.cfg](https://github.com/jkjung-avt/yolov4_crowdhuman/blob/master/cfg/yolov4-crowdhuman-416x416.cfg),
-* download "backup/yolov4-crowdhuman-416x416_best.weights" from the "yolov4_crowdhuman" directory on your Google Drive,
-* prepare an image file for testing.
-
-Then go to your local "darknet" directory and do:
-
-   ```shell
-   $ ./darknet detector test data/crowdhuma-416x416.data \
-                             cfg/yolov4-crowdhuman-416x416.cfg \
-                             backup/yolov4-crowdhuman-416x416_best.weights \
-                             ${HOME}/Pictures/sample.jpg \
-                             -gpu 0
    ```
+   $ ./darknet detector map data/crowdhuman-608x608.data \
+                            cfg/yolov4-crowdhuman-608x608.cfg \
+                            backup/yolov4-crowdhuman-608x608_best.weights \
+                            -gpu 0
+   ```
+
+<a name="training-colab"></a>
+Training on Google Colab
+------------------------
+
+For training on Google Colab, I use a "416x416" yolov4 model as example.  I have put all data processing and training commands into an IPython Notebook.  So training the "yolov4-crowdhuman-416x416" model on Google Colab is just as simple as: (1) opening the Notebook on Google Colab, (2) mount your Google Drive, (3) run all cells in the Notebook.
+
+A few words of caution before you begin running the Notebook on Google Colab:
+
+* Although GPU runtime is *free of charge* on Google Colab, it is **not unlimited nor guaranteed**.  Even though Google Colab [FAQ](https://research.google.com/colaboratory/faq.html#resource-limits) states that "virtual machines have maximum lifetimes that can be as much as 12 hours" , I often saw my Colab sessions getting disconnected after 7~8 hours of non-interactive use.
+
+* If you repeatedly connect to GPU instances on Google Colab, you could be temporarily locked out (not able to connect to GPU instances for a couple of days).  So I'd suggest you to connect to a GPU runtime only when needed, and to manually terminate the GPU sessions when you no longer need them.
+
+* It is strongly advised that you read [Resource Limits](https://research.google.com/colaboratory/faq.html#resource-limits) and use GPU instances on Google Colab sparingly and wisely.
+
+Due to the 7~8 hour limit of runtime mentioned above, you won't be able to train a large yolov4 model in a single session.  That's the reason why I chose "416x416" model for this part of the tutorial.  Here are the steps:
+
+1. Open [yolov4_crowdhuman.ipynb](https://colab.research.google.com/drive/1eoa2_v6wVlcJiDBh3Tb_umhm7a09lpIE?usp=sharing).  This IPython Notebook is on my personal Google Drive.  You could review it, but you could not modify it.
+
+2. Make a copy of "yolov4_crowdhuman.ipynb" on your own Google Drive, by clicking "Files -> Save a copy in Drive" on the menu.  You should use your own saved copy of the Notebook for the rest of the steps.
+
+   ![Saving a copy of yolov4_crowdhuman.ipynb](./doc/save_a_copy.jpg)
+
+3. Follow the instructions in the Notebook, i.e.
+
+   - make sure the IPython Notebook has successully connect to a GPU runtime,
+   - mount your Google Drive (for saving training log and weights),
+   - run all cells ("Runtime -> Run all" or "Runtime -> Restart and run all").
+
+   You should have a good chance of finishing training the "yolov4-crowdhuman-416x416" model before the Colab session gets automatically disconnected (expired).
+
+Instead of opening the Colab Notebook on my Google Drive, you could also go to [your own Colab account](https://colab.research.google.com/notebooks/intro.ipynb) and use "File -> Upload notebook" to upload [yolov4_crowdhuman.ipynb](yolov4_crowdhuman.ipynb) directly.
 
 <a name="deploying"></a>
 Deploying onto Jetson Nano
 --------------------------
 
+To be updated...
+
+After training on Google Colab,
+
 * [yolov4-crowdhuman-416x416.cfg](https://github.com/jkjung-avt/yolov4_crowdhuman/blob/master/cfg/yolov4-crowdhuman-416x416.cfg)
-* download "backup/yolov4-crowdhuman-416x416_best.weights" from the "yolov4_crowdhuman" directory on your Google Drive,
+* Download "backup/yolov4-crowdhuman-416x416_best.weights" from the "yolov4_crowdhuman" directory on your Google Drive
 * Build TensorRT engine and run inference with [tensorrt_demos](https://github.com/jkjung-avt/tensorrt_demos)
