@@ -203,7 +203,7 @@ Due to the 7~8 hour limit of GPU runtime mentioned above, you won't be able to t
 
 Instead of opening the Colab Notebook on my Google Drive, you could also go to [your own Colab account](https://colab.research.google.com/notebooks/intro.ipynb) and use "File -> Upload notebook" to upload [yolov4_crowdhuman.ipynb](yolov4_crowdhuman.ipynb) directly.
 
-Refer to my [Custom YOLOv4 Model on Google Colab]() (to be updated...) blog post for additional information about running the IPython Notebook.
+Refer to my [Custom YOLOv4 Model on Google Colab](https://jkjung-avt.github.io/colab-yolov4/) post for additional information about running the IPython Notebook.
 
 <a name="deploying"></a>
 Deploying onto Jetson Nano
