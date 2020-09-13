@@ -3,13 +3,11 @@ YOLOv4 CrowdHuman Tutorial
 
 This is a tutorial demonstrating how to train a YOLOv4 people detector using [Darknet](https://github.com/AlexeyAB/darknet) and the [CrowdHuman dataset](https://www.crowdhuman.org/).
 
-NOTE: This is **still a work in progress**...
-
 Table of contents
 -----------------
 
 * [Setup](#setup)
-* [Preparing training data locally](#preparing)
+* [Preparing training data](#preparing)
 * [Training on a local PC](#training-locally)
 * [Testing the custom-trained yolov4 model](#testing)
 * [Training on Google Colab](#training-colab)
@@ -19,22 +17,22 @@ Table of contents
 Setup
 -----
 
-If you are going to train the model on [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb), you could skip this Setup section and jump straight to [Training on Google Colab](#training-colab).
+If you are going to train the model on [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb), you could skip this section and jump straight to [Training on Google Colab](#training-colab).
 
-Otherwise, to run training locally, you need to have a x86_64 PC with a decent GPU.  Just for reference, I mainly test the code in this repository using a desktop PC with:
+Otherwise, to run training locally, you need to have a x86_64 PC with a decent GPU.  For example, I mainly test the code in this repository using a desktop PC with:
 
 * NVIDIA GeForce RTX 2080 Ti
 * Ubuntu 18.04.5 LTS (x86_64)
     - CUDA 10.2
     - cuDNN 8.0.1
 
-Also make sure python3 "cv2" (opencv) module is installed properly on your local PC since the data preprocessing code would require it.
+In addition, you should have OpenCV (including python3 "cv2" module) installed properly on the local PC since both the data preparation code and "darknet" would require it.
 
 <a name="preparing"></a>
-Preparing training data locally
--------------------------------
+Preparing training data
+-----------------------
 
-For training on a local PC, I use a "608x608" yolov4 model as example.  Note that I use python3 exclusively in this tutorial (python2 might not work).  Follow these steps to prepare CrowdHuman dataset for training the yolov4 model.
+For training on the local PC, I use a "608x608" yolov4 model as example.  Note that I use python3 exclusively in this tutorial (python2 might not work).  Follow these steps to prepare the "CrowdHuman" dataset for training the yolov4 model.
 
 1. Clone this repository.
 
@@ -43,7 +41,7 @@ For training on a local PC, I use a "608x608" yolov4 model as example.  Note tha
    $ git clone https://github.com/jkjung-avt/yolov4_crowdhuman
    ```
 
-2. Run the "prepare_data.sh" script in the "data/" subdirectory.  It would download CrowdHuman dataset files, unzip all train/val image files, and generate YOLO txt files necessary for training the model.  You could refer to [data/README.md](data/README.md) for more information about the dataset.  You could further refer to [How to train (to detect your custom objects)](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects) for an explanation of YOLO txt files.
+2. Run the "prepare_data.sh" script in the "data/" subdirectory.  It would download the "CrowdHuman" dataset, unzip train/val image files, and generate YOLO txt files necessary for the training.  You could refer to [data/README.md](data/README.md) for more information about the dataset.  You could further refer to [How to train (to detect your custom objects)](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects) for an explanation of YOLO txt files.
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman/data
@@ -52,7 +50,7 @@ For training on a local PC, I use a "608x608" yolov4 model as example.  Note tha
 
    This step could take quite a while, depending on your internet speed.  When it is done, all image files and ".txt" files for training would be in the "data/crowdhuman-608x608/" subdirectory.  (If interested, you could do `python3 verify_txts.py 608x608` to verify the generated txt files.)
 
-   This tutorial is for training the yolov4 model to detect 2 classes of object: "head" (0) and "person" (1), where the "person" class corresponds to "full body" (including occluded body portions) in the original CrowdHuman annotations.  Take a look at "data/crowdhuman-608x608.data", "data/crowdhuman.names", and "data/crowdhuman-608x608/" to gain a better understanding of the data files that have been generated/prepared for the training.
+   This tutorial is for training the yolov4 model to detect 2 classes of object: "head" (0) and "person" (1), where the "person" class corresponds to "full body" (including occluded body portions) in the original "CrowdHuman" annotations.  Take a look at "data/crowdhuman-608x608.data", "data/crowdhuman.names", and "data/crowdhuman-608x608/" to gain a better understanding of the data files that have been generated/prepared for the training.
 
    ![A sample jpg from the CrowdHuman dataset](doc/crowdhuman_sample.jpg)
 
@@ -62,13 +60,13 @@ Training on a local PC
 
 Continuing from steps in the previous section, you'd be using the "darknet" framework to train the yolov4 model.
 
-1. Download and build "darknet" code.  (TODO: Consider making "darknet" as a submodule and automate the build process?)
+1. Download and build "darknet" code.  (NOTE to myself: Consider making "darknet" as a submodule and automate the build process?)
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman
    $ git clone https://github.com/AlexeyAB/darknet.git
    $ cd darknet
-   $ vim Makefile  # edit Makefile with a editor of your own preference
+   $ vim Makefile  # edit Makefile with your preferred editor (might not be vim)
    ```
 
    Modify the first few lines of the "Makefile" as follows.  Please refer to [How to compile on Linux (using make)](https://github.com/AlexeyAB/darknet#how-to-compile-on-linux-using-make) for more information about these settings.  Note that, in the example below, CUDA compute "75" is for RTX 2080 Ti and "61" is for GTX 1080.  You might need to modify those based on the kind of GPU you are using.
@@ -101,7 +99,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
    $ make
    ```
 
-   When it is done, I would suggest to test the "darknet" executable with the `test` command as follows.
+   When it is done, you could (optionally) test the "darknet" executable as follows.
 
    ```shell
    ### download pre-trained yolov4 coco weights and test with the dog image
@@ -111,14 +109,14 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
                              data/dog.jpg
    ```
 
-2. Copy over all files needed for training and download the pre-trained weights ("yolov4.conv.137").
+2. Then copy over all files needed for training and download the pre-trained weights ("yolov4.conv.137").
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman
    $ ./prepare_training.sh 608x608
    ```
 
-3. Train the model.  Please refer to [How to train with multi-GPU](https://github.com/AlexeyAB/darknet#how-to-train-with-multi-gpu) for how to fine-tune your training process.  For example, you could specify `-gpus 0,1,2,3` in order to use multiple GPUs to speed up training.
+3. Train the "yolov4-crowdhuman-608x608" model.  Please refer to [How to train with multi-GPU](https://github.com/AlexeyAB/darknet#how-to-train-with-multi-gpu) for how to fine-tune your training process.  For example, you could specify `-gpus 0,1,2,3` in order to use multiple GPUs to speed up training.
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman/darknet
@@ -129,15 +127,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
 
    When the model is being trained, you could monitor its progress on the loss/mAP chart (since the `-map` option is used).  Alternatively, if you are training on a remote PC via ssh, add the `-dont_show -mjpeg_port 8090` option so that you could monitor the loss/mAP chart on a web browser (http://{IP address}:8090/).
 
-   ```
-   ### alternatively, if training on an ssh'ed remote PC
-   $ ./darknet detector train data/crowdhuman-608x608.data \
-                              cfg/yolov4-crowdhuman-608x608.cfg \
-                              yolov4.conv.137 -map -gpu 0 \
-                              -dont_show -mjpeg_port 8090
-   ```
-
-   As a referemce, training this "yolov4-crowdhuman-608x608" model with my RTX 2080 Ti GPU takes 17~18 hours.
+   As a reference, training this "yolov4-crowdhuman-608x608" model with my RTX 2080 Ti GPU takes 17~18 hours.
 
    ![My sample loss/mAP chart of the "yolov4-crowdhuman-608x608" model](doc/chart_yolov4-crowdhuman-608x608.png)
 
@@ -145,7 +135,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
 Testing the custom-trained yolov4 model
 ---------------------------------------
 
-After you have trained the "yolov4-crowdhuman-608x608" model locally, it is very easy to test the custom-trained model with "darknet".
+After you have trained the "yolov4-crowdhuman-608x608" model locally, you could test the "best" custom-trained model like this.
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman/darknet
@@ -156,7 +146,9 @@ After you have trained the "yolov4-crowdhuman-608x608" model locally, it is very
                              -gpu 0
    ```
 
-In addition, you could verify mAP of the "best" model using "darknet".
+   ![A sample prediction using the trained "yolov4-crowdhuman-608x608" model](doc/predictions_sample.jpg)
+
+In addition, you could verify mAP of the "best" model like this.
 
    ```
    $ ./darknet detector map data/crowdhuman-608x608.data \
@@ -183,17 +175,17 @@ For example, I got mAP@0.50 = 0.814523 when I tested my own custom-trained "yolo
 Training on Google Colab
 ------------------------
 
-For training on Google Colab, I use a "416x416" yolov4 model as example.  I have put all data processing and training commands into an IPython Notebook.  So training the "yolov4-crowdhuman-416x416" model on Google Colab is just as simple as: (1) opening the Notebook on Google Colab, (2) mount your Google Drive, (3) run all cells in the Notebook.
+For doing training on Google Colab, I use a "416x416" yolov4 model as example.  I have put all data processing and training commands into an IPython Notebook.  So training the "yolov4-crowdhuman-416x416" model on Google Colab is just as simple as: (1) opening the Notebook on Google Colab, (2) mount your Google Drive, (3) run all cells in the Notebook.
 
 A few words of caution before you begin running the Notebook on Google Colab:
 
-* Although GPU runtime is *free of charge* on Google Colab, it is **not unlimited nor guaranteed**.  Even though Google Colab [FAQ](https://research.google.com/colaboratory/faq.html#resource-limits) states that "virtual machines have maximum lifetimes that can be as much as 12 hours" , I often saw my Colab sessions getting disconnected after 7~8 hours of non-interactive use.
+* Google Colab's GPU runtime is *free of charge*, but it is **not unlimited nor guaranteed**.  Even though the Google Colab [FAQ](https://research.google.com/colaboratory/faq.html#resource-limits) states that *"virtual machines have maximum lifetimes that can be as much as 12 hours"*, I often saw my Colab GPU sessions getting disconnected after 7~8 hours of non-interactive use.
 
-* If you repeatedly connect to GPU instances on Google Colab, you could be temporarily locked out (not able to connect to GPU instances for a couple of days).  So I'd suggest you to connect to a GPU runtime only when needed, and to manually terminate the GPU sessions when you no longer need them.
+* If you connect to GPU instances on Google Colab repeatedly and frequently, you could be **temporarily locked out** (not able to connect to GPU instances for a couple of days).  So I'd suggest you to connect to a GPU runtime sparingly and only when needed, and to manually terminate the GPU sessions as soon as you no longer need them.
 
-* It is strongly advised that you read [Resource Limits](https://research.google.com/colaboratory/faq.html#resource-limits) and use GPU instances on Google Colab sparingly and wisely.
+* It is strongly advised that you read and mind Google Colab's [Resource Limits](https://research.google.com/colaboratory/faq.html#resource-limits).
 
-Due to the 7~8 hour limit of runtime mentioned above, you won't be able to train a large yolov4 model in a single session.  That's the reason why I chose "416x416" model for this part of the tutorial.  Here are the steps:
+Due to the 7~8 hour limit of GPU runtime mentioned above, you won't be able to train a large yolov4 model in a single session.  That's the reason why I chose "416x416" model for this part of the tutorial.  Here are the steps:
 
 1. Open [yolov4_crowdhuman.ipynb](https://colab.research.google.com/drive/1eoa2_v6wVlcJiDBh3Tb_umhm7a09lpIE?usp=sharing).  This IPython Notebook is on my personal Google Drive.  You could review it, but you could not modify it.
 
@@ -201,9 +193,9 @@ Due to the 7~8 hour limit of runtime mentioned above, you won't be able to train
 
    ![Saving a copy of yolov4_crowdhuman.ipynb](./doc/save_a_copy.jpg)
 
-3. Follow the instructions in the Notebook, i.e.
+3. Follow the instructions in the Notebook to train the "yolov4-crowdhuman-416x416" model, i.e.
 
-   - make sure the IPython Notebook has successully connect to a GPU runtime,
+   - make sure the IPython Notebook has successfully connected to a GPU runtime,
    - mount your Google Drive (for saving training log and weights),
    - run all cells ("Runtime -> Run all" or "Runtime -> Restart and run all").
 
@@ -211,11 +203,13 @@ Due to the 7~8 hour limit of runtime mentioned above, you won't be able to train
 
 Instead of opening the Colab Notebook on my Google Drive, you could also go to [your own Colab account](https://colab.research.google.com/notebooks/intro.ipynb) and use "File -> Upload notebook" to upload [yolov4_crowdhuman.ipynb](yolov4_crowdhuman.ipynb) directly.
 
+Refer to my [Custom YOLOv4 Model on Google Colab]() (to be updated...) blog post for additional information about running the IPython Notebook.
+
 <a name="deploying"></a>
 Deploying onto Jetson Nano
 --------------------------
 
-To be updated...
+This section has not been finished...
 
 After training on Google Colab,
 
