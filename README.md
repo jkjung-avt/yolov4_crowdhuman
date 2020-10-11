@@ -209,10 +209,42 @@ Refer to my [Custom YOLOv4 Model on Google Colab](https://jkjung-avt.github.io/c
 Deploying onto Jetson Nano
 --------------------------
 
-This section has not been finished...
+To deploy the trained "yolov4-crowdhuman-416x416" model onto Jsetson Nano, I'd use my [jkjung-avt/tensorrt_demos](https://github.com/jkjung-avt/tensorrt_demos) code to build/deploy it as a TensorRT engine.  Here are the detailed steps:
 
-After training on Google Colab,
+1. On the Jetson Nano, check out my [jkjung-avt/tensorrt_demos](https://github.com/jkjung-avt/tensorrt_demos) code and make sure you are able to run the standard "yolov4-416" TensorRT engine without problem.  Please refer to [Demo #5: YOLOv4](https://github.com/jkjung-avt/tensorrt_demos#yolov4) for details.
 
-* [yolov4-crowdhuman-416x416.cfg](https://github.com/jkjung-avt/yolov4_crowdhuman/blob/master/cfg/yolov4-crowdhuman-416x416.cfg)
-* Download "backup/yolov4-crowdhuman-416x416_best.weights" from the "yolov4_crowdhuman" directory on your Google Drive
-* Build TensorRT engine and run inference with [tensorrt_demos](https://github.com/jkjung-avt/tensorrt_demos)
+   ```shell
+   $ cd ${HOME}/project
+   $ git clone https://github.com/jkjung-avt/tensorrt_demos.git
+   ### Detailed steps omitted: install pycuda, download yolov4-416 model, yolo_to_onnx, onnx_to_tensorrt
+   ### ......
+   $ cd ${HOME}/project/tensorrt_demos
+   $ python3 trt_yolo.py --image ${HOME}/Pictures/dog.jpg -m yolov4-416
+   ```
+
+2. Download the "yolov4-crowdhuman-416x416" model.  More specifically, get "yolov4-crowdhuman-416x416.cfg" from this repository and download "yolov4-crowdhuman-416x416_best.weights" file from your Google Drive.  Rename the .weights file so that it matches the .cfg file.
+
+   ```shell
+   $ cd ${HOME}/project/tensorrt_demos/yolo
+   $ wget https://raw.githubusercontent.com/jkjung-avt/yolov4_crowdhuman/master/cfg/yolov4-crowdhuman-416x416.cfg
+   $ cp ${HOME}/Downloads/yolov4-crowdhuman-416x416_best.weights yolov4-crowdhuman-416x416.weights
+   ```
+
+   Then build the TensorRT (FP16) engine.  Note the "-c 2" in the command-line option is for specifying that the model is for detecting 2 classes of objects.
+
+   ```shell
+   $ python3 yolo_to_onnx.py -c 2 -m yolov4-crowdhuman-416x416
+   $ python3 onnx_to_tensorrt.py -c 2 -m yolov4-crowdhuman-416x416
+   ```
+
+3. Test the TensorRT engine.  For example, I tested it with the "Avengers: Infinity War" movie trailer.  (You should download and test with your own images or videos.)
+
+   ```shell
+   $ cd ${HOME}/project/tensorrt_demos
+   $ python3 trt_yolo.py --video ${HOME}/Videos/Infinity_War.mp4 \
+                         -c 2 -m yolov4-crowdhuman-416x416
+   ```
+
+   (Click on the image below to see the whole video clip...)
+
+   [![Testing with the Avengers: Infinity War trailer](https://raw.githubusercontent.com/jkjung-avt/yolov4_crowdhuman/master/doc/infinity_war.jpg)](https://youtu.be/7Qr_Fq18FgM)
