@@ -122,7 +122,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
    $ cd ${HOME}/project/yolov4_crowdhuman/darknet
    $ ./darknet detector train data/crowdhuma-608x608.data \
                               cfg/yolov4-crowdhuman-608x608.cfg \
-                              yolov4.conv.137 -map -gpu 0
+                              yolov4.conv.137 -map -gpus 0
    ```
 
    When the model is being trained, you could monitor its progress on the loss/mAP chart (since the `-map` option is used).  Alternatively, if you are training on a remote PC via ssh, add the `-dont_show -mjpeg_port 8090` option so that you could monitor the loss/mAP chart on a web browser (http://{IP address}:8090/).
@@ -143,7 +143,7 @@ After you have trained the "yolov4-crowdhuman-608x608" model locally, you could 
                              cfg/yolov4-crowdhuman-608x608.cfg \
                              backup/yolov4-crowdhuman-608x608_best.weights \
                              data/crowdhuman-608x608/273275,4e9d1000623d182f.jpg \
-                             -gpu 0
+                             -gpus 0
    ```
 
    ![A sample prediction using the trained "yolov4-crowdhuman-608x608" model](doc/predictions_sample.jpg)
@@ -154,7 +154,7 @@ In addition, you could verify mAP of the "best" model like this.
    $ ./darknet detector map data/crowdhuman-608x608.data \
                             cfg/yolov4-crowdhuman-608x608.cfg \
                             backup/yolov4-crowdhuman-608x608_best.weights \
-                            -gpu 0
+                            -gpus 0
    ```
 
 For example, I got mAP@0.50 = 0.814523 when I tested my own custom-trained "yolov4-crowdhuman-608x608" model.
