@@ -120,7 +120,7 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
 
    ```shell
    $ cd ${HOME}/project/yolov4_crowdhuman/darknet
-   $ ./darknet detector train data/crowdhuma-608x608.data \
+   $ ./darknet detector train data/crowdhuman-608x608.data \
                               cfg/yolov4-crowdhuman-608x608.cfg \
                               yolov4.conv.137 -map -gpus 0
    ```
