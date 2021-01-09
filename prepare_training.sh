@@ -24,7 +24,7 @@ echo "** Copy files for training"
 ln -sf $(readlink -f data/${CROWDHUMAN}) darknet/data/
 cp data/${CROWDHUMAN}.data darknet/data/
 cp data/crowdhuman.names darknet/data/
-cp cfg/yolov4-${CROWDHUMAN}.cfg darknet/cfg/
+cp cfg/*.cfg darknet/cfg/
 
 if [[ ! -f darknet/yolov4.conv.137 ]]; then
   pushd darknet > /dev/null
