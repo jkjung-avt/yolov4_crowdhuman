@@ -131,6 +131,14 @@ Continuing from steps in the previous section, you'd be using the "darknet" fram
 
    ![My sample loss/mAP chart of the "yolov4-crowdhuman-608x608" model](doc/chart_yolov4-crowdhuman-608x608.png)
 
+   Another example for the training of "yolov4-tiny-crowdhuman-608x608" model on RTX 2080 Ti GPU (< 3 hours).
+
+   ![My sample loss/mAP chart of the "yolov4-tiny-crowdhuman-608x608" model](doc/chart_yolov4-tiny-crowdhuman-608x608.png)
+
+   And another one for the training of "yolov4-tiny-3l-crowdhuman-416x416" model on RTX 2080 Ti GPU (< 2 hours).
+
+   ![My sample loss/mAP chart of the "yolov4-tiny-3l-crowdhuman-416x416" model](doc/chart_yolov4-tiny-3l-crowdhuman-416x416.png)
+
 <a name="testing"></a>
 Testing the custom-trained yolov4 model
 ---------------------------------------
@@ -248,3 +256,9 @@ To deploy the trained "yolov4-crowdhuman-416x416" model onto Jsetson Nano, I'd u
    (Click on the image below to see the whole video clip...)
 
    [![Testing with the Avengers: Infinity War trailer](https://raw.githubusercontent.com/jkjung-avt/yolov4_crowdhuman/master/doc/infinity_war.jpg)](https://youtu.be/7Qr_Fq18FgM)
+
+<a name="contributions"></a>
+Contributions
+--------------------------
+
+[@philipp-schmidt](https://github.com/philipp-schmidt): yolov4-tiny models and training charts
